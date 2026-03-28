@@ -1,0 +1,21 @@
+[project]
+name = "insurance-data-tools"
+version = "0.1.0"
+description = "Open-source tools for collecting auto insurance rate data from state DOI websites"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+dependencies = [
+    "playwright>=1.40.0",
+]
+
+[project.optional-dependencies]
+pdf = ["pdfplumber>=0.10.0"]
+dev = ["pytest>=7.0", "ruff>=0.1.0"]
+
+[project.scripts]
+scrape-rates = "scrape:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"

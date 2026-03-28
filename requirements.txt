@@ -1,0 +1,5 @@
+# Core: browser automation for interactive DOI tools
+playwright>=1.40.0
+
+# Optional: PDF parsing for states that publish PDF reports (e.g., Arizona)
+pdfplumber>=0.10.0

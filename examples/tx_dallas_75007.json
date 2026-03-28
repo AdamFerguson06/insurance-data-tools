@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "state": "TX",
+    "county": "Dallas",
+    "zip_code": "75007",
+    "source": "Texas Department of Insurance (HelpInsure)",
+    "source_url": "https://www.helpinsure.com",
+    "query_date": "2026-03-15",
+    "coverage": "30/60/25 (Texas minimum)"
+  },
+  "factor_analysis": {
+    "baseline": {
+      "description": "Age 25-64, good credit, clean record",
+      "carriers_queried": 19,
+      "median_annual_rate": 1247
+    },
+    "factors": [
+      {
+        "factor_name": "age_young",
+        "description": "Young driver (age 16-24) vs. baseline",
+        "multiplier": 3.06,
+        "carriers_matched": 16,
+        "interpretation": "Young drivers pay roughly 3x the baseline rate"
+      },
+      {
+        "factor_name": "age_senior",
+        "description": "Senior driver (age 65+) vs. baseline",
+        "multiplier": 0.95,
+        "carriers_matched": 19,
+        "interpretation": "Senior drivers pay slightly less than baseline"
+      },
+      {
+        "factor_name": "credit_poor",
+        "description": "Poor credit vs. good credit baseline",
+        "multiplier": 1.40,
+        "carriers_matched": 16,
+        "interpretation": "Poor credit increases rates by ~40%"
+      },
+      {
+        "factor_name": "credit_average",
+        "description": "Average credit vs. good credit baseline",
+        "multiplier": 1.18,
+        "carriers_matched": 18,
+        "interpretation": "Average credit increases rates by ~18%"
+      },
+      {
+        "factor_name": "accident",
+        "description": "At-fault accident vs. clean record",
+        "multiplier": 1.56,
+        "carriers_matched": 18,
+        "interpretation": "An at-fault accident increases rates by ~56%"
+      }
+    ]
+  },
+  "notes": [
+    "Factor multipliers are median ratios across all matched carriers",
+    "Not all carriers appear in every profile (some don't quote certain risk tiers)",
+    "Rates reflect minimum coverage (30/60/25) for Dallas County, ZIP 75007",
+    "Data collected March 2026 from the official TDI rate comparison tool"
+  ]
+}

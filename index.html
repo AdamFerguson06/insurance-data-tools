@@ -5,185 +5,881 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Auto Insurance Data Tools | QuoteFii</title>
   <meta name="description" content="Open-source tools for collecting and analyzing auto insurance rate data from state Departments of Insurance. Built by QuoteFii.">
+  <link rel="canonical" href="https://adamferguson06.github.io/insurance-data-tools/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Auto Insurance Data Tools | QuoteFii">
+  <meta property="og:description" content="Open-source tools for collecting and analyzing auto insurance rate data directly from state Department of Insurance websites.">
+  <meta property="og:url" content="https://adamferguson06.github.io/insurance-data-tools/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Auto Insurance Data Tools | QuoteFii">
+  <meta name="twitter:description" content="Open-source tools for collecting and analyzing auto insurance rate data directly from state Department of Insurance websites.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1a1a2e; line-height: 1.6; }
-    .hero { background: #1B3A6D; color: white; padding: 4rem 2rem; text-align: center; }
-    .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
-    .hero p { font-size: 1.2rem; color: #93b5e0; max-width: 700px; margin: 0 auto; }
-    .container { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
-    h2 { font-size: 1.8rem; color: #1B3A6D; margin: 2rem 0 1rem; }
-    h3 { font-size: 1.3rem; color: #2d5a9e; margin: 1.5rem 0 0.5rem; }
-    p { margin-bottom: 1rem; color: #444; }
-    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-    .card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 1.5rem; }
-    .card h3 { margin-top: 0; }
-    .card .status { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
-    .status.live { background: #d4edda; color: #155724; }
-    .status.dev { background: #fff3cd; color: #856404; }
-    .tag { display: inline-block; font-size: 0.75rem; background: #e8f0fe; color: #1B3A6D; padding: 2px 8px; border-radius: 4px; margin: 2px; }
-    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-    th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #e0e0e0; }
-    th { background: #f8f9fa; font-weight: 600; color: #1B3A6D; }
-    a { color: #2d5a9e; }
-    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
-    pre { background: #f4f4f4; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
-    .cta { background: #f0f4ff; border: 1px solid #d0daf0; border-radius: 8px; padding: 2rem; margin: 2rem 0; text-align: center; }
-    .cta a { display: inline-block; background: #1B3A6D; color: white; padding: 0.75rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; }
-    .cta a:hover { background: #2d5a9e; }
-    footer { background: #f8f9fa; padding: 2rem; text-align: center; color: #666; font-size: 0.9rem; border-top: 1px solid #e0e0e0; }
-    footer a { color: #2d5a9e; }
+    :root {
+      --primary: #1B3A6D;
+      --primary-light: #2d5a9e;
+      --primary-dark: #132a4f;
+      --accent: #3b82f6;
+      --accent-light: #dbeafe;
+      --text: #1e293b;
+      --text-secondary: #64748b;
+      --bg: #ffffff;
+      --bg-subtle: #f8fafc;
+      --bg-muted: #f1f5f9;
+      --border: #e2e8f0;
+      --border-light: #f1f5f9;
+      --success: #16a34a;
+      --success-bg: #dcfce7;
+      --warning: #ca8a04;
+      --warning-bg: #fef9c3;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: var(--text);
+      line-height: 1.7;
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: var(--primary-dark);
+      padding: 0.625rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      letter-spacing: -0.01em;
+    }
+
+    .topbar-brand svg {
+      opacity: 0.9;
+    }
+
+    .topbar-links {
+      display: flex;
+      gap: 1.25rem;
+    }
+
+    .topbar-links a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .topbar-links a:hover {
+      color: #fff;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff;
+      padding: 5rem 2rem 4.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.06) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.04) 0%, transparent 50%);
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 0.375rem 0.875rem;
+      border-radius: 100px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .hero-badge svg {
+      flex-shrink: 0;
+    }
+
+    .hero h1 {
+      font-size: 2.75rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      letter-spacing: -0.025em;
+    }
+
+    .hero p {
+      font-size: 1.125rem;
+      color: rgba(255, 255, 255, 0.75);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Container ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── Sections ── */
+    .section {
+      padding: 4rem 0;
+    }
+
+    .section + .section {
+      border-top: 1px solid var(--border-light);
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary-light);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-label svg {
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.025em;
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 640px;
+      margin-bottom: 2rem;
+    }
+
+    /* ── About ── */
+    .about-text {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 720px;
+    }
+
+    .about-text + .about-text {
+      margin-top: 0.75rem;
+    }
+
+    .about-text strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ── Cards ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--accent-light);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: var(--accent-light);
+      color: var(--primary);
+    }
+
+    .card h3 {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .card p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 0;
+      line-height: 1.65;
+    }
+
+    .card p + p {
+      margin-top: 0.75rem;
+    }
+
+    .card-meta {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-light);
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.25rem 0.625rem;
+      border-radius: 100px;
+    }
+
+    .status.live {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .status.dev {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .status.live .status-dot { background: var(--success); }
+    .status.dev .status-dot { background: var(--warning); }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+      margin-top: 0.75rem;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 500;
+      background: var(--bg-muted);
+      color: var(--text-secondary);
+      padding: 0.25rem 0.625rem;
+      border-radius: 6px;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── Tables ── */
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 1.5rem 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.875rem 1rem;
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      padding: 0.125rem 0.5rem;
+      border-radius: 4px;
+      background: var(--accent-light);
+      color: var(--primary);
+    }
+
+    .table-caption {
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* ── Methodology ── */
+    .methodology-intro {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 720px;
+      margin-bottom: 1.5rem;
+    }
+
+    .methodology-example {
+      margin-top: 2rem;
+    }
+
+    .methodology-example h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--bg-subtle) 0%, var(--accent-light) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 3rem 2rem;
+      text-align: center;
+      margin: 3rem 0 0;
+    }
+
+    .cta-title {
+      font-size: 1.375rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .cta-desc {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary);
+      color: #fff;
+      padding: 0.8125rem 1.75rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9375rem;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .cta-button:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .cta-links {
+      margin-top: 1rem;
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+
+    .cta-links a {
+      color: var(--primary-light);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .cta-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Contributing ── */
+    .contributing-text {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 720px;
+    }
+
+    .contributing-text + .contributing-text {
+      margin-top: 0.75rem;
+    }
+
+    .priority-states {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+      margin-top: 1rem;
+    }
+
+    .priority-state {
+      display: inline-block;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      background: var(--bg-muted);
+      color: var(--text);
+      padding: 0.375rem 0.75rem;
+      border-radius: 6px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--primary-dark);
+      color: rgba(255, 255, 255, 0.6);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.8125rem;
+      margin-top: 4rem;
+    }
+
+    footer a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    footer a:hover {
+      color: #fff;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-sep {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ── Links ── */
+    a {
+      color: var(--primary-light);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .topbar {
+        padding: 0.5rem 1rem;
+      }
+
+      .topbar-links {
+        gap: 0.75rem;
+      }
+
+      .hero {
+        padding: 3.5rem 1.5rem 3rem;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+      }
+
+      .container {
+        padding: 0 1.25rem;
+      }
+
+      .section {
+        padding: 3rem 0;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-section {
+        padding: 2rem 1.25rem;
+      }
+
+      .footer-links {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .footer-sep {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 1.625rem;
+      }
+
+      .topbar-links a:not(:first-child) {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
 
+<div class="topbar">
+  <a href="https://blog.quotefii.com?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools" class="topbar-brand">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    QuoteFii
+  </a>
+  <div class="topbar-links">
+    <a href="https://blog.quotefii.com/data?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">Data</a>
+    <a href="https://blog.quotefii.com/tools?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">Tools</a>
+    <a href="https://github.com/AdamFerguson06/insurance-data-tools">GitHub</a>
+  </div>
+</div>
+
 <div class="hero">
-  <h1>Auto Insurance Data Tools</h1>
-  <p>Open-source tools for collecting and analyzing auto insurance rate data directly from state Department of Insurance websites.</p>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      Open Source
+    </div>
+    <h1>Auto Insurance Data Tools</h1>
+    <p>Collecting and analyzing auto insurance rate data directly from state Department of Insurance websites. No commercial intermediaries, just public .gov data.</p>
+  </div>
 </div>
 
 <div class="container">
 
-  <h2>What This Is</h2>
-  <p>
-    Most auto insurance rate data published online comes from a single commercial data vendor (Quadrant Information Services),
-    relicensed by dozens of publisher sites. We built these tools to go directly to the source: state Departments of Insurance,
-    which publish rate comparison data derived from the same regulatory filings that Quadrant parses.
-  </p>
-  <p>
-    Every data point is sourced from <strong>.gov websites</strong> (Tier 1 sources). No commercial intermediaries.
-    No Bankrate. No NerdWallet. No MoneyGeek. Just public data from the regulators who oversee the insurance industry.
-  </p>
-
-  <h2>Tools</h2>
-
-  <div class="card-grid">
-    <div class="card">
-      <h3>State DOI Rate Scraper</h3>
-      <span class="status live">Live</span>
-      <p>Queries state DOI rate comparison tools with multiple driver profiles to extract carrier-specific rates and isolate rate factor impacts (age, credit, driving record).</p>
-      <p>
-        <span class="tag">Python</span>
-        <span class="tag">Playwright</span>
-        <span class="tag">Firecrawl</span>
-      </p>
-      <p><strong>Supported states:</strong> TX (HelpInsure API), AL (Compare Premiums), AZ (PDF report). More being added.</p>
-    </div>
-
-    <div class="card">
-      <h3>50-State DOI Data Collection</h3>
-      <span class="status dev">In Progress</span>
-      <p>Systematic collection of auto insurance data from all 50 state DOIs + DC. Rate factors, carrier rates, complaint data, and discount information stored in a structured database.</p>
-      <p>
-        <span class="tag">Airtable</span>
-        <span class="tag">TypeScript</span>
-      </p>
-      <p><strong>Progress:</strong> 3 of 51 states complete.</p>
-    </div>
-
-    <div class="card">
-      <h3>Source Integrity Checker</h3>
-      <span class="status live">Live</span>
-      <p>Pre-commit hook that verifies source citations match data origins. Blocks commits where source attribution changes without corresponding data value changes.</p>
-      <p>
-        <span class="tag">Bash</span>
-        <span class="tag">Git Hook</span>
-      </p>
-    </div>
-  </div>
-
-  <h2>Data Sources</h2>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Source</th>
-        <th>Type</th>
-        <th>Data Provided</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>NAIC Auto Insurance Database Report</td>
-        <td>Tier 1</td>
-        <td>National and state average premiums, market share, year-over-year trends</td>
-      </tr>
-      <tr>
-        <td>BLS CPI (Motor Vehicle Insurance)</td>
-        <td>Tier 1</td>
-        <td>Insurance price inflation, monthly index values</td>
-      </tr>
-      <tr>
-        <td>State DOI Rate Comparison Tools</td>
-        <td>Tier 1</td>
-        <td>Carrier-specific rates by driver profile, factor multipliers</td>
-      </tr>
-      <tr>
-        <td>NHTSA</td>
-        <td>Tier 1</td>
-        <td>Crash and safety data</td>
-      </tr>
-      <tr>
-        <td>FTC</td>
-        <td>Tier 1</td>
-        <td>Consumer protection, telematics enforcement</td>
-      </tr>
-      <tr>
-        <td>State Departments of Insurance (50 + DC)</td>
-        <td>Tier 1</td>
-        <td>Minimum coverage requirements, consumer resources</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h2>Rate Factor Methodology</h2>
-  <p>
-    To isolate how individual factors (age, credit score, driving record) affect insurance rates,
-    we query state DOI tools with standardized driver profiles that vary exactly one factor at a time.
-    The ratio between the variant rate and the baseline rate gives us the factor multiplier.
-  </p>
-
-  <h3>Example: Texas DOI (HelpInsure)</h3>
-  <table>
-    <thead>
-      <tr><th>Factor</th><th>Multiplier</th><th>Carriers Matched</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Age 16-24 (vs. 25-64 baseline)</td><td>3.06x</td><td>16</td></tr>
-      <tr><td>Age 65+ (vs. 25-64 baseline)</td><td>0.95x</td><td>19</td></tr>
-      <tr><td>Poor credit (vs. good baseline)</td><td>1.40x</td><td>16</td></tr>
-      <tr><td>Average credit (vs. good baseline)</td><td>1.18x</td><td>18</td></tr>
-      <tr><td>At-fault accident (vs. clean record)</td><td>1.56x</td><td>18</td></tr>
-    </tbody>
-  </table>
-  <p><em>Source: Texas Department of Insurance, HelpInsure.com. Data collected March 2026.</em></p>
-
-  <div class="cta">
-    <p style="margin-bottom: 1rem; color: #1B3A6D; font-weight: 600;">Want to see how your rate compares?</p>
-    <a href="https://blog.quotefii.com/tools/overpaying-calculator?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">Try Our Free Calculator</a>
-    <p style="margin-top: 1rem; font-size: 0.85rem; color: #666;">
-      Or explore our full <a href="https://blog.quotefii.com/data?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">data tables</a>
-      and <a href="https://blog.quotefii.com/tools?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">insurance tools</a>.
+  <!-- About -->
+  <div class="section">
+    <span class="section-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      About
+    </span>
+    <h2 class="section-title">Why We Built This</h2>
+    <p class="about-text">
+      Most auto insurance rate data published online comes from a single commercial data vendor,
+      relicensed by dozens of publisher sites. We built these tools to go directly to the source: state Departments of Insurance,
+      which publish rate comparison data derived from the same regulatory filings.
+    </p>
+    <p class="about-text">
+      Every data point is sourced from <strong>.gov websites</strong> (Tier 1 sources). No commercial intermediaries, no relicensed data. Just public data from the regulators who oversee the insurance industry.
+      We use this data to power our <a href="https://blog.quotefii.com/blog/average-car-insurance-cost-by-state?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">state-by-state cost guides</a> and <a href="https://blog.quotefii.com/blog/car-insurance-costs-by-age-and-profile?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">rate factor analysis</a>.
     </p>
   </div>
 
-  <h2>Contributing</h2>
-  <p>
-    We're building coverage for all 50 states. If you'd like to help add a state DOI scraper module
-    or have access to rate data we haven't covered yet, open an issue or submit a pull request.
-  </p>
-  <p>
-    Priority states needed: FL, CA, NY, PA, IL, OH, GA, MI, NJ (top 10 by market size).
-  </p>
+  <!-- Tools -->
+  <div class="section">
+    <span class="section-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      Tools
+    </span>
+    <h2 class="section-title">What We're Building</h2>
+    <p class="section-desc">Open-source scrapers, parsers, and validators for state-level insurance data.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <span class="status live"><span class="status-dot"></span> Live</span>
+        </div>
+        <h3>State DOI Rate Scraper</h3>
+        <p>Queries state DOI rate comparison tools with multiple driver profiles to extract carrier-specific rates and isolate rate factor impacts (age, credit, driving record).</p>
+        <div class="tags">
+          <span class="tag">Python</span>
+          <span class="tag">Playwright</span>
+          <span class="tag">Firecrawl</span>
+        </div>
+        <div class="card-meta">
+          <strong>Supported states:</strong> TX (HelpInsure API), AL (Compare Premiums), AZ (PDF report). More being added.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <span class="status dev"><span class="status-dot"></span> In Progress</span>
+        </div>
+        <h3>50-State DOI Data Collection</h3>
+        <p>Systematic collection of auto insurance data from all 50 state DOIs + DC. Rate factors, carrier rates, complaint data, and discount information.</p>
+        <div class="tags">
+          <span class="tag">Airtable</span>
+          <span class="tag">TypeScript</span>
+        </div>
+        <div class="card-meta">
+          <strong>Progress:</strong> 3 of 51 jurisdictions complete.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <span class="status live"><span class="status-dot"></span> Live</span>
+        </div>
+        <h3>Source Integrity Checker</h3>
+        <p>Pre-commit hook that verifies source citations match data origins. Blocks commits where source attribution changes without corresponding data value changes.</p>
+        <div class="tags">
+          <span class="tag">Bash</span>
+          <span class="tag">Git Hook</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Sources -->
+  <div class="section">
+    <span class="section-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Sources
+    </span>
+    <h2 class="section-title">Data Sources</h2>
+    <p class="section-desc">All data comes from Tier 1 government and regulatory sources.</p>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Tier</th>
+            <th>Data Provided</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>NAIC Auto Insurance Database Report</td>
+            <td><span class="tier-badge">Tier 1</span></td>
+            <td>National and state average premiums, market share, year-over-year trends</td>
+          </tr>
+          <tr>
+            <td>BLS CPI (Motor Vehicle Insurance)</td>
+            <td><span class="tier-badge">Tier 1</span></td>
+            <td>Insurance price inflation, monthly index values</td>
+          </tr>
+          <tr>
+            <td>State DOI Rate Comparison Tools</td>
+            <td><span class="tier-badge">Tier 1</span></td>
+            <td>Carrier-specific rates by driver profile, factor multipliers</td>
+          </tr>
+          <tr>
+            <td>NHTSA</td>
+            <td><span class="tier-badge">Tier 1</span></td>
+            <td>Crash and safety data</td>
+          </tr>
+          <tr>
+            <td>FTC</td>
+            <td><span class="tier-badge">Tier 1</span></td>
+            <td>Consumer protection, telematics enforcement</td>
+          </tr>
+          <tr>
+            <td>State Departments of Insurance (50 + DC)</td>
+            <td><span class="tier-badge">Tier 1</span></td>
+            <td>Minimum coverage requirements, consumer resources</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Methodology -->
+  <div class="section">
+    <span class="section-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Methodology
+    </span>
+    <h2 class="section-title">Rate Factor Methodology</h2>
+    <p class="methodology-intro">
+      To isolate how individual factors (age, credit score, driving record) affect insurance rates,
+      we query state DOI tools with standardized driver profiles that vary exactly one factor at a time.
+      The ratio between the variant rate and the baseline rate gives us the factor multiplier.
+      See our full <a href="https://blog.quotefii.com/blog/car-insurance-costs-by-age-and-profile?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">cost breakdown by age and profile</a> for how these multipliers translate to real dollar amounts.
+    </p>
+
+    <div class="methodology-example">
+      <h3>Example: Texas DOI (HelpInsure)</h3>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Factor</th>
+              <th>Multiplier</th>
+              <th>Carriers Matched</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Age 16-24 (vs. 25-64 baseline)</td>
+              <td><strong>3.06x</strong></td>
+              <td>16</td>
+            </tr>
+            <tr>
+              <td>Age 65+ (vs. 25-64 baseline)</td>
+              <td><strong>0.95x</strong></td>
+              <td>19</td>
+            </tr>
+            <tr>
+              <td>Poor credit (vs. good baseline)</td>
+              <td><strong>1.40x</strong></td>
+              <td>16</td>
+            </tr>
+            <tr>
+              <td>Average credit (vs. good baseline)</td>
+              <td><strong>1.18x</strong></td>
+              <td>18</td>
+            </tr>
+            <tr>
+              <td>At-fault accident (vs. clean record)</td>
+              <td><strong>1.56x</strong></td>
+              <td>18</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-caption">Source: Texas Department of Insurance, HelpInsure.com. Data collected March 2026.</p>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="section">
+    <div class="cta-section">
+      <p class="cta-title">See How Your Rate Compares</p>
+      <p class="cta-desc">Use our free calculator to check whether you're overpaying for auto insurance.</p>
+      <a href="https://blog.quotefii.com/tools/overpaying-calculator?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools" class="cta-button">
+        Try the Free Calculator
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <p class="cta-links">
+        Or explore our <a href="https://blog.quotefii.com/data?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">data tables</a>
+        and <a href="https://blog.quotefii.com/tools?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">insurance tools</a>.
+      </p>
+    </div>
+  </div>
+
+  <!-- Contributing -->
+  <div class="section">
+    <span class="section-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Contribute
+    </span>
+    <h2 class="section-title">Contributing</h2>
+    <p class="contributing-text">
+      We're building coverage for all 50 states to power <a href="https://blog.quotefii.com/data?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">QuoteFii's data tables</a>. If you'd like to help add a state DOI scraper module
+      or have access to rate data we haven't covered yet, <a href="https://github.com/AdamFerguson06/insurance-data-tools/issues">open an issue</a> or submit a pull request.
+    </p>
+    <p class="contributing-text"><strong>Priority states needed (top 10 by market size):</strong></p>
+    <div class="priority-states">
+      <span class="priority-state">FL</span>
+      <span class="priority-state">CA</span>
+      <span class="priority-state">NY</span>
+      <span class="priority-state">PA</span>
+      <span class="priority-state">IL</span>
+      <span class="priority-state">OH</span>
+      <span class="priority-state">GA</span>
+      <span class="priority-state">MI</span>
+      <span class="priority-state">NJ</span>
+    </div>
+  </div>
 
 </div>
 
 <footer>
-  <p>
-    Built by <a href="https://blog.quotefii.com?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">QuoteFii</a>
-    | Auto insurance data analysis using .gov sources
-    | <a href="https://quotefii.com?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">Compare Quotes</a>
-  </p>
+  <div class="footer-links">
+    <a href="https://blog.quotefii.com?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">QuoteFii Blog</a>
+    <span class="footer-sep"></span>
+    <a href="https://quotefii.com?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">Compare Quotes</a>
+    <span class="footer-sep"></span>
+    <a href="https://github.com/AdamFerguson06/insurance-data-tools">View on GitHub</a>
+  </div>
 </footer>
 
 </body>

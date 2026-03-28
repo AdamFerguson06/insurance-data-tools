@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto Insurance Data Tools | QuoteFii</title>
+  <meta name="description" content="Open-source tools for collecting and analyzing auto insurance rate data from state Departments of Insurance. Built by QuoteFii.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1a1a2e; line-height: 1.6; }
+    .hero { background: #1B3A6D; color: white; padding: 4rem 2rem; text-align: center; }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .hero p { font-size: 1.2rem; color: #93b5e0; max-width: 700px; margin: 0 auto; }
+    .container { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+    h2 { font-size: 1.8rem; color: #1B3A6D; margin: 2rem 0 1rem; }
+    h3 { font-size: 1.3rem; color: #2d5a9e; margin: 1.5rem 0 0.5rem; }
+    p { margin-bottom: 1rem; color: #444; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 1.5rem; }
+    .card h3 { margin-top: 0; }
+    .card .status { display: inline-block; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
+    .status.live { background: #d4edda; color: #155724; }
+    .status.dev { background: #fff3cd; color: #856404; }
+    .tag { display: inline-block; font-size: 0.75rem; background: #e8f0fe; color: #1B3A6D; padding: 2px 8px; border-radius: 4px; margin: 2px; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #e0e0e0; }
+    th { background: #f8f9fa; font-weight: 600; color: #1B3A6D; }
+    a { color: #2d5a9e; }
+    code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+    pre { background: #f4f4f4; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+    .cta { background: #f0f4ff; border: 1px solid #d0daf0; border-radius: 8px; padding: 2rem; margin: 2rem 0; text-align: center; }
+    .cta a { display: inline-block; background: #1B3A6D; color: white; padding: 0.75rem 2rem; border-radius: 6px; text-decoration: none; font-weight: 600; }
+    .cta a:hover { background: #2d5a9e; }
+    footer { background: #f8f9fa; padding: 2rem; text-align: center; color: #666; font-size: 0.9rem; border-top: 1px solid #e0e0e0; }
+    footer a { color: #2d5a9e; }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Auto Insurance Data Tools</h1>
+  <p>Open-source tools for collecting and analyzing auto insurance rate data directly from state Department of Insurance websites.</p>
+</div>
+
+<div class="container">
+
+  <h2>What This Is</h2>
+  <p>
+    Most auto insurance rate data published online comes from a single commercial data vendor (Quadrant Information Services),
+    relicensed by dozens of publisher sites. We built these tools to go directly to the source: state Departments of Insurance,
+    which publish rate comparison data derived from the same regulatory filings that Quadrant parses.
+  </p>
+  <p>
+    Every data point is sourced from <strong>.gov websites</strong> (Tier 1 sources). No commercial intermediaries.
+    No Bankrate. No NerdWallet. No MoneyGeek. Just public data from the regulators who oversee the insurance industry.
+  </p>
+
+  <h2>Tools</h2>
+
+  <div class="card-grid">
+    <div class="card">
+      <h3>State DOI Rate Scraper</h3>
+      <span class="status live">Live</span>
+      <p>Queries state DOI rate comparison tools with multiple driver profiles to extract carrier-specific rates and isolate rate factor impacts (age, credit, driving record).</p>
+      <p>
+        <span class="tag">Python</span>
+        <span class="tag">Playwright</span>
+        <span class="tag">Firecrawl</span>
+      </p>
+      <p><strong>Supported states:</strong> TX (HelpInsure API), AL (Compare Premiums), AZ (PDF report). More being added.</p>
+    </div>
+
+    <div class="card">
+      <h3>50-State DOI Data Collection</h3>
+      <span class="status dev">In Progress</span>
+      <p>Systematic collection of auto insurance data from all 50 state DOIs + DC. Rate factors, carrier rates, complaint data, and discount information stored in a structured database.</p>
+      <p>
+        <span class="tag">Airtable</span>
+        <span class="tag">TypeScript</span>
+      </p>
+      <p><strong>Progress:</strong> 3 of 51 states complete.</p>
+    </div>
+
+    <div class="card">
+      <h3>Source Integrity Checker</h3>
+      <span class="status live">Live</span>
+      <p>Pre-commit hook that verifies source citations match data origins. Blocks commits where source attribution changes without corresponding data value changes.</p>
+      <p>
+        <span class="tag">Bash</span>
+        <span class="tag">Git Hook</span>
+      </p>
+    </div>
+  </div>
+
+  <h2>Data Sources</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Source</th>
+        <th>Type</th>
+        <th>Data Provided</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>NAIC Auto Insurance Database Report</td>
+        <td>Tier 1</td>
+        <td>National and state average premiums, market share, year-over-year trends</td>
+      </tr>
+      <tr>
+        <td>BLS CPI (Motor Vehicle Insurance)</td>
+        <td>Tier 1</td>
+        <td>Insurance price inflation, monthly index values</td>
+      </tr>
+      <tr>
+        <td>State DOI Rate Comparison Tools</td>
+        <td>Tier 1</td>
+        <td>Carrier-specific rates by driver profile, factor multipliers</td>
+      </tr>
+      <tr>
+        <td>NHTSA</td>
+        <td>Tier 1</td>
+        <td>Crash and safety data</td>
+      </tr>
+      <tr>
+        <td>FTC</td>
+        <td>Tier 1</td>
+        <td>Consumer protection, telematics enforcement</td>
+      </tr>
+      <tr>
+        <td>State Departments of Insurance (50 + DC)</td>
+        <td>Tier 1</td>
+        <td>Minimum coverage requirements, consumer resources</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Rate Factor Methodology</h2>
+  <p>
+    To isolate how individual factors (age, credit score, driving record) affect insurance rates,
+    we query state DOI tools with standardized driver profiles that vary exactly one factor at a time.
+    The ratio between the variant rate and the baseline rate gives us the factor multiplier.
+  </p>
+
+  <h3>Example: Texas DOI (HelpInsure)</h3>
+  <table>
+    <thead>
+      <tr><th>Factor</th><th>Multiplier</th><th>Carriers Matched</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Age 16-24 (vs. 25-64 baseline)</td><td>3.06x</td><td>16</td></tr>
+      <tr><td>Age 65+ (vs. 25-64 baseline)</td><td>0.95x</td><td>19</td></tr>
+      <tr><td>Poor credit (vs. good baseline)</td><td>1.40x</td><td>16</td></tr>
+      <tr><td>Average credit (vs. good baseline)</td><td>1.18x</td><td>18</td></tr>
+      <tr><td>At-fault accident (vs. clean record)</td><td>1.56x</td><td>18</td></tr>
+    </tbody>
+  </table>
+  <p><em>Source: Texas Department of Insurance, HelpInsure.com. Data collected March 2026.</em></p>
+
+  <div class="cta">
+    <p style="margin-bottom: 1rem; color: #1B3A6D; font-weight: 600;">Want to see how your rate compares?</p>
+    <a href="https://blog.quotefii.com/tools/overpaying-calculator?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">Try Our Free Calculator</a>
+    <p style="margin-top: 1rem; font-size: 0.85rem; color: #666;">
+      Or explore our full <a href="https://blog.quotefii.com/data?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">data tables</a>
+      and <a href="https://blog.quotefii.com/tools?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">insurance tools</a>.
+    </p>
+  </div>
+
+  <h2>Contributing</h2>
+  <p>
+    We're building coverage for all 50 states. If you'd like to help add a state DOI scraper module
+    or have access to rate data we haven't covered yet, open an issue or submit a pull request.
+  </p>
+  <p>
+    Priority states needed: FL, CA, NY, PA, IL, OH, GA, MI, NJ (top 10 by market size).
+  </p>
+
+</div>
+
+<footer>
+  <p>
+    Built by <a href="https://blog.quotefii.com?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">QuoteFii</a>
+    | Auto insurance data analysis using .gov sources
+    | <a href="https://quotefii.com?utm_source=github&utm_medium=pages&utm_content=insurance-data-tools">Compare Quotes</a>
+  </p>
+</footer>
+
+</body>
+</html>
